@@ -1,0 +1,44 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Tests
+        run: npm test
+
+      - name: Deploy to Production
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run: |
+          # Replace the following command with your deployment script or commands
+          echo "Deploying to production..."
+        env:
+          NODE_ENV: production
+# - name: Deploy to Production
+#   if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+#   run: |
+#     echo "Deploying to production..."
+#     # Example: Deploying to AWS Elastic Beanstalk
+#     aws elasticbeanstalk create-application-version --application-name MyApp \
+#     --version-label ${{ secrets.AWS_EB_VERSION }} \
+#     --source-bundle S3Bucket=my-deployment-bucket,S3Key=my-app-version.zip
+#   env:
+#     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
